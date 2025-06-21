@@ -14,8 +14,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
-
-	"fiber-boilerplate/handlers"
 )
 
 // Helper function to get environment variable with fallback
@@ -52,19 +50,8 @@ func main() {
 		Views:   views,
 	})
 
-	// Initialize handlers
-	authHandler := handlers.NewAuthHandler()
-	homeHandler := handlers.NewHomeHandler()
-	dashboardHandler := handlers.NewDashboardHandler()
-
-	// Define routes
-	app.Get("/", homeHandler.Home)
-	app.Get("/auth/login", authHandler.Login)
-	app.Get("/auth/register", authHandler.Register)
-	app.Get("/auth/logout", authHandler.Logout)
-	app.Get("/dashboard", dashboardHandler.Dashboard)
-
-	// Define a route for the root path
+	// Setup routes
+	SetupRoutes(app)
 
 	// Add health check endpoints (/livez and /readyz)
 	app.Use(healthcheck.New())
