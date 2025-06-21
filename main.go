@@ -12,7 +12,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
+
+	"fiber-boilerplate/handlers"
 )
 
 // Helper function to get environment variable with fallback
@@ -40,15 +43,28 @@ func main() {
 		shutdownTimeout = 5 // Default to 5 seconds if parsing fails
 	}
 
-	// Create a new Fiber app
+	// Initialize template engine
+	views := html.New("./views", ".html")
+
+	// Create a new Fiber app with template engine
 	app := fiber.New(fiber.Config{
 		AppName: appName,
+		Views:   views,
 	})
 
+	// Initialize handlers
+	authHandler := handlers.NewAuthHandler()
+	homeHandler := handlers.NewHomeHandler()
+	dashboardHandler := handlers.NewDashboardHandler()
+
+	// Define routes
+	app.Get("/", homeHandler.Home)
+	app.Get("/auth/login", authHandler.Login)
+	app.Get("/auth/register", authHandler.Register)
+	app.Get("/auth/logout", authHandler.Logout)
+	app.Get("/dashboard", dashboardHandler.Dashboard)
+
 	// Define a route for the root path
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, Fiber with Air hot reloading!")
-	})
 
 	// Add health check endpoints (/livez and /readyz)
 	app.Use(healthcheck.New())
