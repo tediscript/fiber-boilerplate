@@ -1,0 +1,20 @@
+{{template "layouts/main" .}}
+
+{{define "partials/header"}}
+<header>
+    <h1>{{.Title}}</h1>
+</header>
+{{end}}
+
+{{define "partials/footer"}}
+<footer>
+    <p>&copy; {{.Year}} Fiber Boilerplate</p>
+</footer>
+{{end}}
+
+{{define "content"}}
+<div style="text-align: center;">
+    <h2>Hello, World!</h2>
+    <p>Welcome to your Fiber application with HTML templates!</p>
+</div>
+{{end}}
