@@ -10,8 +10,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/healthcheck"
-	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 )
@@ -52,12 +50,6 @@ func main() {
 
 	// Setup routes
 	SetupRoutes(app)
-
-	// Add health check endpoints (/livez and /readyz)
-	app.Use(healthcheck.New())
-
-	// Add metrics dashboard endpoint (/metrics)
-	app.Get("/metrics", monitor.New())
 
 	// Setup graceful shutdown
 	// Create channel for shutdown signals
