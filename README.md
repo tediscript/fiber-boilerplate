@@ -1,97 +1,127 @@
 # Fiber Boilerplate with Air Hot Reloading
 
-This is a boilerplate for a Go Fiber application with Air hot reloading configured.
+A production-ready GoFiber web application boilerplate following best practices from the .clinerules specification.
+
+## Project Structure
+
+```mermaid
+graph TD
+    A[Project Root] --> B[main.go]
+    A --> C[routes/]
+    A --> D[handlers/]
+    A --> E[views/]
+    A --> F[middlewares/]
+    A --> G[models/]
+    A --> H[store/]
+    A --> I[Makefile]
+```
 
 ## Features
 
-- [Fiber](https://github.com/gofiber/fiber) - Fast HTTP web framework for Go
-- [Air](https://github.com/cosmtrek/air) - Live reload for Go applications
-- Environment variables support via .env file
-- Health check endpoints (/livez and /readyz)
-- Metrics dashboard endpoint (/metrics)
-- Graceful shutdown
+- **Core Framework**: [Fiber](https://github.com/gofiber/fiber) - High performance HTTP framework
+- **Development Tools**:
+  - [Air](https://github.com/cosmtrek/air) - Hot reloading
+  - Built-in Makefile workflow
+- **Architecture**:
+  - Route grouping and separation
+  - Handler/store pattern for database abstraction
+  - Custom middleware support
+- **Template Engine**:
+  - Go's html/template integrated via Fiber adapter
+  - Layouts and partials support
+- **Operational**:
+  - Health check endpoints (/livez, /readyz)
+  - Metrics dashboard (/metrics)
+  - Graceful shutdown
 
 ## Requirements
 
-- Go 1.18 or higher
-- Air (for hot reloading)
+- Go 1.18+
+- Air (for development)
+- golangci-lint (for code quality)
 
 ## Getting Started
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/fiber-boilerplate.git
-   cd fiber-boilerplate
-   ```
-
-2. Install dependencies:
-   ```bash
-   go mod download
-   ```
-
-### Development
-
-To run the application with hot reloading:
-
 ```bash
-make dev
+git clone https://github.com/yourusername/fiber-boilerplate.git
+cd fiber-boilerplate
+go mod download
 ```
 
-Or directly with Air:
+### Development Workflow
 
-```bash
-air
+```mermaid
+graph LR
+    A[Code Changes] --> B[Air Reload]
+    B --> C[Automatic Build]
+    C --> D[Restart Server]
 ```
 
-Or using the shell script:
-
+Key commands:
 ```bash
-./dev.sh
-```
-
-This will start the application and automatically reload it whenever you make changes to the source code.
-
-### Production
-
-To build and run the application for production:
-
-```bash
-make build
-./fiber-boilerplate
-```
-
-### Other Commands
-
-The project includes a Makefile with several useful commands:
-
-```bash
-make help      # Show available commands
-make dev       # Run with hot reloading
-make build     # Build the application
-make run       # Run without hot reloading
-make clean     # Clean build artifacts
-make test      # Run tests
+make dev    # Run with hot reloading (uses Air)
+make build  # Production build
+make test   # Run tests
+make lint   # Run linters
 ```
 
 ## Configuration
 
-The application can be configured using environment variables in the `.env` file:
+Configure via `.env` file:
 
-- `PORT` - The port on which the server will listen (default: 3000)
-- `APP_NAME` - The name of the application (default: "Fiber Boilerplate")
-- `SHUTDOWN_TIMEOUT` - Graceful shutdown timeout in seconds (default: 5)
+| Variable          | Default            | Description                     |
+|-------------------|--------------------|---------------------------------|
+| PORT              | 3000               | Server port                    |
+| APP_NAME          | "Fiber Boilerplate"| Application name               |
+| SHUTDOWN_TIMEOUT  | 5                  | Graceful shutdown timeout (sec)|
+
+## Architecture Overview
+
+```mermaid
+graph LR
+    R[Routes] --> M[Middlewares]
+    M --> H[Handlers]
+    H --> S[Store]
+    S --> DB[(Database)]
+    H --> V[Views]
+```
+
+### Key Patterns
+
+1. **Route Definitions**:
+   - Grouped by resource/functionality
+   - Defined in `routes/` package
+   - Clean separation from handlers
+
+2. **Handler/Store Pattern**:
+   - Handlers process HTTP requests
+   - Store handles database operations
+   - Clear separation of concerns
+
+3. **Template Engine**:
+   - Configured in `main.go`
+   - Supports layouts (`views/layouts/`)
+   - Pages in `views/pages/`
+
+## Code Standards
+
+- Follows "Effective Go" idioms
+- Strict error handling (never ignore errors)
+- Linting via golangci-lint
+- Formatted with go fmt
+- Validation for all incoming data
 
 ## Air Configuration
 
-Air is configured in the `.air.toml` file. You can modify this file to change how Air watches and rebuilds your application.
+Customize hot-reloading in `.air.toml`:
 
-Key settings:
+```toml
+[build]
+  delay = 1000               # Delay after changes (ms)
+  include_ext = ["go", "html"] # Watched extensions
+  exclude_dir = ["vendor"]   # Ignored directories
+```
 
-- `include_ext` - File extensions to watch for changes
-- `exclude_dir` - Directories to exclude from watching
-- `exclude_file` - Files to exclude from watching
-- `delay` - Delay in milliseconds before rebuilding after a change
-
-For more information, see the [Air documentation](https://github.com/cosmtrek/air).
+For full configuration options, see [Air documentation](https://github.com/cosmtrek/air).
