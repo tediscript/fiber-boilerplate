@@ -1,0 +1,82 @@
+{{ define "content" }}
+    <!-- Breadcrumb Navigation -->
+    <nav id="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+        </ol>
+    </nav>
+    
+    <section id="dashboard" aria-labelledby="dashboard-heading">
+        <h1 id="dashboard-heading">Dashboard</h1>
+
+        <section id="statistics" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" style="display:none;">Key Statistics</h2>
+            {{ range .Stats }}
+            <article>
+                <h3>{{ .Title }}</h3>
+                <p>{{ .Value }}</p>
+            </article>
+            {{ end }}
+        </section>
+        <br/>
+        <section id="recent-orders" aria-labelledby="orders-heading">
+            <div class="table-header">
+                <h2 id="orders-heading" style="margin: 0;">Recent Orders</h2>
+                <a href="#add-order" class="button-add">Add New Order</a>
+            </div>
+            <table>
+                <caption>Details of the five most recent orders.</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Customer Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Orders }}
+                    <tr>
+                        <td><a href="#order/{{ .ID }}">{{ .ID }}</a></td>
+                        <td>{{ .Customer }}</td>
+                        <td>{{ .Status }}</td>
+                        <td>{{ .Total }}</td>
+                        <td class="action-links">
+                            <a href="#details/{{ .ID }}" title="Details" style="color: var(--info-color);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1-8h-2V7h2v2z"/></svg>
+                            </a>
+                            <a href="#edit/{{ .ID }}" title="Edit" style="color: var(--primary-color);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            </a>
+                            <a href="#delete/{{ .ID }}" title="Delete" style="color: var(--danger-color);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </a>
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+            <nav aria-label="Table pagination">
+                <ul class="pagination">
+                    <li class="disabled"><a href="#">Previous</a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">Next</a></li>
+                </ul>
+            </nav>
+        </section>
+        
+        <section id="form-section" aria-labelledby="form-heading">
+            <h2 id="form-heading">Sample Form</h2>
+            <form>
+                <div><label for="name">Full Name</label><input type="text" id="name" name="name" placeholder="Enter your full name"></div>
+                <div><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="you@example.com"></div>
+                <div><label for="category">Category</label><select id="category" name="category"><option>Please select</option><option value="tech">Technology</option></select></div>
+                <div><button type="submit">Submit Form</button></div>
+            </form>
+        </section>
+    </section>
+{{ end }}

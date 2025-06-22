@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div id="dashboard-container">
+        <!-- Header and Main Navigation -->
+        <header>
+            <nav aria-label="Main Navigation">
+                <a href="/" aria-label="Dashboard Home"><strong>AdminPanel</strong></a>
+                <ul>
+                    <li><a href="#profile">Profile</a></li>
+                    <li><a href="#settings">Settings</a></li>
+                    <li><a href="#logout">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="page-wrapper">
+            <!-- Sidebar Navigation -->
+            <aside>
+                <nav aria-label="Sidebar Navigation">
+                    <h2>Management</h2>
+                    <ul>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#users">Users</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#orders">Orders</a></li>
+                        <li><a href="#reports">Reports</a></li>
+                        <li><a href="#integrations">Integrations</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main>
+                {{template "content" .}}
+            </main>
+        </div>
+        <footer><p>&copy; 2025 AdminPanel. All rights reserved.</p></footer>
+    </div>
+</body>
+</html>

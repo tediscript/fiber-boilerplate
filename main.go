@@ -38,6 +38,9 @@ func main() {
 		Views:   views,
 	})
 
+	// Static Files Configuration
+	app.Static("/static", "./static")
+
 	// Route Registration
 	routes.SetupRoutes(app)
 
