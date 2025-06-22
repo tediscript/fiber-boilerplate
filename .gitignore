@@ -22,7 +22,7 @@ go.work
 tmp/
 
 # Environment variables
-# .env
+.env
 
 # IDE specific files
 .idea/
