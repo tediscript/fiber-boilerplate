@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"fiber-boilerplate/routes"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
@@ -49,7 +51,7 @@ func main() {
 	})
 
 	// Setup routes
-	SetupRoutes(app)
+	routes.SetupRoutes(app)
 
 	// Setup graceful shutdown
 	// Create channel for shutdown signals
