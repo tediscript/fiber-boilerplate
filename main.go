@@ -1,82 +1,71 @@
 package main
 
 import (
+	// Standard library
 	"context"
 	"log"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
+	// Project packages
+	"fiber-boilerplate/configs"
 	"fiber-boilerplate/routes"
 
+	// External packages
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 )
 
-// Helper function to get environment variable with fallback
-func getEnv(key, fallback string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-	return fallback
-}
-
 func main() {
+	// Configuration Initialization
 	// Load .env file
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found, using default values")
 	}
 
-	// Get environment variables with fallbacks
-	port := getEnv("PORT", "3000")
-	appName := getEnv("APP_NAME", "Fiber Boilerplate")
-	shutdownTimeoutStr := getEnv("SHUTDOWN_TIMEOUT", "5")
+	// Initialize configuration
+	cfg := configs.InitConfig()
 
-	// Parse shutdown timeout
-	shutdownTimeout, err := strconv.Atoi(shutdownTimeoutStr)
-	if err != nil {
-		shutdownTimeout = 5 // Default to 5 seconds if parsing fails
-	}
-
-	// Initialize template engine
+	// Template Engine Setup
 	views := html.New("./views", ".html")
 
-	// Create a new Fiber app with template engine
+	// Fiber Application Creation
 	app := fiber.New(fiber.Config{
-		AppName: appName,
+		AppName: cfg.AppName,
 		Views:   views,
 	})
 
-	// Setup routes
+	// Route Registration
 	routes.SetupRoutes(app)
 
-	// Setup graceful shutdown
+	// Graceful Shutdown Configuration
 	// Create channel for shutdown signals
 	shutdownChan := make(chan os.Signal, 1)
 	// Notify the channel for system signals
 	signal.Notify(shutdownChan, syscall.SIGINT, syscall.SIGTERM)
 
-	// Start server in a goroutine
+	// Server Startup
 	go func() {
-		log.Printf("Server %s starting on http://localhost:%s\n", appName, port)
-		if err := app.Listen(":" + port); err != nil {
+		log.Printf("Server %s starting on http://localhost:%s\n", cfg.AppName, cfg.Port)
+		if err := app.Listen(":" + cfg.Port); err != nil {
 			log.Fatalf("Error starting server: %v", err)
 		}
 	}()
 
+	// Shutdown Handling
 	// Wait for shutdown signal
 	<-shutdownChan
 	log.Println("Shutdown signal received")
 
 	// Create a context with timeout for shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(shutdownTimeout)*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(cfg.ShutdownTimeout)*time.Second)
 	defer cancel()
 
 	// Shutdown the server with timeout
-	log.Printf("Shutting down server (timeout: %d seconds)...\n", shutdownTimeout)
+	log.Printf("Shutting down server (timeout: %d seconds)...\n", cfg.ShutdownTimeout)
 	if err := app.ShutdownWithContext(ctx); err != nil {
 		log.Fatalf("Server shutdown failed: %v", err)
 	}
