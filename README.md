@@ -11,24 +11,38 @@ graph TD
     A --> D[handlers/]
     A --> E[views/]
     A --> F[middlewares/]
-    A --> G[models/]
-    A --> H[store/]
+    A --> G[configs/]
+    A --> H[static/]
     A --> I[Makefile]
+    E --> J[layouts/]
+    E --> K[pages/]
+    E --> L[partials/]
 ```
 
 ## Features
 
 - **Core Framework**: [Fiber](https://github.com/gofiber/fiber) - High performance HTTP framework
 - **Development Tools**:
-  - [Air](https://github.com/cosmtrek/air) - Hot reloading
+  - [Air](https://github.com/cosmtrek/air) - Hot reloading (.air.toml config)
   - Built-in Makefile workflow
+  - dev.sh helper scripts
+- **Authentication**:
+  - Login/Register handlers
+  - Session management
+- **Admin Dashboard**:
+  - Dedicated admin layout
+  - Protected routes
 - **Architecture**:
   - Route grouping and separation
   - Handler/store pattern for database abstraction
   - Custom middleware support
+  - Configuration management (configs/)
 - **Template Engine**:
   - Go's html/template integrated via Fiber adapter
-  - Layouts and partials support
+  - Layouts (main.html, admin.html) and partials support
+- **Static Assets**:
+  - CSS framework integration (Bootstrap/Tailwind)
+  - Organized in static/ directory
 - **Operational**:
   - Health check endpoints (/livez, /readyz)
   - Metrics dashboard (/metrics)
@@ -77,6 +91,47 @@ Configure via `.env` file:
 | APP_NAME          | "Fiber Boilerplate"| Application name               |
 | SHUTDOWN_TIMEOUT  | 5                  | Graceful shutdown timeout (sec)|
 
+## File Structure Details
+
+```markdown
+/
+├── .air.toml           # Air configuration
+├── .clinerules         # Custom assistant instructions
+├── .env.example        # Environment template
+├── .gitignore
+├── dev.sh              # Development utilities
+├── go.mod
+├── go.sum
+├── main.go             # Main entry point
+├── Makefile
+├── README.md
+├── template.html       # HTML template reference
+├── configs/            # Configuration management
+│   └── configs.go
+├── handlers/           # HTTP handlers
+│   ├── auth_handler.go
+│   ├── dashboard_handler.go
+│   └── home_handler.go
+├── middlewares/        # Custom middleware
+├── models/             # Data structures (placeholder)
+├── routes/             # Route definitions
+│   └── routes.go
+├── static/             # Static assets
+│   └── css/
+│       └── styles.css
+├── store/              # Database layer (placeholder)
+└── views/              # Templates
+    ├── layouts/
+    │   ├── admin.html
+    │   └── main.html
+    ├── pages/
+    │   ├── dashboard.html
+    │   ├── home.html
+    │   ├── login.html
+    │   └── register.html
+    └── partials/       # Reusable components
+```
+
 ## Architecture Overview
 
 ```mermaid
@@ -84,8 +139,10 @@ graph LR
     R[Routes] --> M[Middlewares]
     M --> H[Handlers]
     H --> S[Store]
+    H --> C[Configs]
     S --> DB[(Database)]
     H --> V[Views]
+    V --> A[Assets]
 ```
 
 ### Key Patterns
@@ -100,10 +157,20 @@ graph LR
    - Store handles database operations
    - Clear separation of concerns
 
-3. **Template Engine**:
+3. **Configuration Management**:
+   - Centralized in configs/ package
+   - Environment variable support
+
+4. **Authentication Flow**:
+   - Login/Register handlers
+   - Session management
+   - Protected routes
+
+5. **Template Engine**:
    - Configured in `main.go`
-   - Supports layouts (`views/layouts/`)
+   - Supports multiple layouts (`views/layouts/`)
    - Pages in `views/pages/`
+   - Reusable partials (`views/partials/`)
 
 ## Code Standards
 
@@ -112,6 +179,7 @@ graph LR
 - Linting via golangci-lint
 - Formatted with go fmt
 - Validation for all incoming data
+- Configuration via .clinerules
 
 ## Air Configuration
 
