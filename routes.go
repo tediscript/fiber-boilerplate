@@ -21,6 +21,16 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/auth/logout", authHandler.Logout)
 	app.Get("/dashboard", dashboardHandler.Dashboard)
 
+	// New login page inspired by template
+	app.Get("/login", func(c *fiber.Ctx) error {
+		return c.Render("pages/login", fiber.Map{})
+	})
+
+	// New register page inspired by template
+	app.Get("/register", func(c *fiber.Ctx) error {
+		return c.Render("pages/register", fiber.Map{})
+	})
+
 	// Add health check endpoints (/livez and /readyz)
 	app.Use(healthcheck.New())
 
