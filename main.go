@@ -27,7 +27,10 @@ func main() {
 	}
 
 	// Initialize configuration
-	cfg := configs.InitConfig()
+	cfg, err := configs.InitConfig()
+	if err != nil {
+		log.Fatalf("Configuration error: %v", err)
+	}
 
 	// Template Engine Setup
 	views := html.New("./views", ".html")
