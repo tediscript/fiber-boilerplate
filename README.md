@@ -37,6 +37,7 @@ graph TD
   - Handler/store pattern for database abstraction
   - Custom middleware support
   - Configuration management (configs/)
+  - Docker Swarm secrets support
 - **Template Engine**:
   - Go's html/template integrated via Fiber adapter
   - Layouts (main.html, admin.html) and partials support
@@ -50,16 +51,23 @@ graph TD
 
 ## Requirements
 
-- Go 1.18+
-- Air (for development)
-- golangci-lint (for code quality)
+- Go 1.18+ (main language/runtime)
+- Air (hot reloading for development)
+- golangci-lint (code quality/linting)
+
+#### How to install requirements (macOS)
+```bash
+brew install go
+go install github.com/air-verse/air@latest
+brew install golangci-lint
+```
 
 ## Getting Started
 
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/fiber-boilerplate.git
+git clone https://github.com/tediscript/fiber-boilerplate.git
 cd fiber-boilerplate
 go mod download
 ```
@@ -89,15 +97,26 @@ Configure via `.env` file:
 |-------------------|--------------------|---------------------------------|
 | PORT              | 3000               | Server port                    |
 | APP_NAME          | "Fiber Boilerplate"| Application name               |
-| SHUTDOWN_TIMEOUT  | 5                  | Graceful shutdown timeout (sec)|
+| SHUTDOWN_TIMEOUT  | 10                 | Graceful shutdown timeout (sec)|
+| APP_SECRET        | (none)             | Application secret key         |
+
+### Docker Swarm Secrets Support
+
+Any environment variable can be loaded from a file using the `*_FILE` suffix pattern. This is useful for Docker Swarm secrets or any scenario where secrets are mounted as files:
+
+```bash
+# Instead of setting the value directly:
+APP_SECRET=my-secret-key
+
+# You can point to a file containing the secret:
+APP_SECRET_FILE=/run/secrets/app_secret
+```
+
+The application will automatically read the file contents and use them as the variable value. This pattern works for any configuration variable.
 
 ## File Structure Details
 
 ```markdown
-/
-├── .air.toml           # Air configuration
-├── .clinerules         # Custom assistant instructions
-├── .env.example        # Environment template
 ├── .gitignore
 ├── dev.sh              # Development utilities
 ├── go.mod
@@ -159,7 +178,8 @@ graph LR
 
 3. **Configuration Management**:
    - Centralized in configs/ package
-   - Environment variable support
+   - Type-safe parsing via `caarlos0/env` library with struct tags
+   - Docker Swarm secrets support (`*_FILE` pattern)
 
 4. **Authentication Flow**:
    - Login/Register handlers
